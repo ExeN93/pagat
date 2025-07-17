@@ -1,0 +1,164 @@
+<style>
+	:root {
+		--primary: #00aef0;
+		--popup-bg: #ffffff;
+		--overlay: rgba(0, 0, 0, 0.6);
+	}
+
+	#promo-popup {
+		display: block;
+		position: fixed;
+		inset: 0;
+		background-color: var(--overlay);
+		z-index: 9999;
+		animation: fadeIn 0.3s ease-in-out forwards;
+	}
+
+	.popup-content {
+		background-color: var(--popup-bg);
+		padding: 30px 25px;
+		border-radius: 12px;
+		max-width: 400px;
+		width: 90%;
+		margin: 10vh auto;
+		position: relative;
+		text-align: center;
+		box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+		animation: slideUp 0.4s ease-in-out forwards;
+		opacity: 0;
+		transform: translateY(30px);
+		font-family: 'Poppins', sans-serif;
+	}
+
+	.popup-content.show {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.close-btn {
+		position: absolute;
+		top: 10px;
+		right: 15px;
+		font-size: 24px;
+		color: #999;
+		cursor: pointer;
+		transition: color 0.2s ease-in-out;
+	}
+	.close-btn:hover {
+		color: #333;
+	}
+
+	h2 {
+		color: var(--primary);
+		margin-bottom: 10px;
+		font-size: 22px;
+	}
+
+	p {
+		margin: 8px 0;
+		color: #333;
+		font-size: 15px;
+	}
+
+	button.copy-btn {
+		margin-top: 15px;
+		padding: 10px 22px;
+		background-color: var(--primary);
+		color: #fff;
+		border: none;
+		border-radius: 8px;
+		cursor: pointer;
+		font-size: 16px;
+		transition: background-color 0.3s ease;
+	}
+	button.copy-btn:hover {
+		background-color: #0090c8;
+	}
+
+	.copy-confirm {
+		margin-top: 12px;
+		color: green;
+		font-size: 14px;
+		display: none;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	@keyframes slideUp {
+		from {
+			transform: translateY(30px);
+			opacity: 0;
+		}
+		to {
+			transform: translateY(0);
+			opacity: 1;
+		}
+	}
+</style>
+
+<div id="promo-popup">
+	<div class="popup-content" id="popup-content">
+		<span class="close-btn" onclick="closePopup()">&times;</span>
+		<h2>🔥 Promocja specjalna!</h2>
+		<p>Użyj kodu: <strong id="promo-code">PAGAT2025</strong></p>
+		<p>Otrzymaj 5% zniżki na cały asortyment!</p>
+		<button class="copy-btn" onclick="copyPromoCode()">Kopiuj kod</button>
+		<div class="copy-confirm" id="copy-confirm">✅ Skopiowano!</div>
+	</div>
+</div>
+
+<script>
+	function daysSince(timestamp) {
+		const now = Date.now()
+		const diff = now - timestamp
+		return diff / (1000 * 60 * 60 * 24)
+	}
+
+	function shouldShowPopup() {
+		const lastShown = localStorage.getItem('promoLastShown')
+		return !lastShown || daysSince(Number(lastShown)) >= 7
+	}
+
+	function showPopup() {
+		const popup = document.getElementById('promo-popup')
+		const content = document.getElementById('popup-content')
+		popup.style.display = 'block'
+		setTimeout(() => content.classList.add('show'), 50)
+		localStorage.setItem('promoLastShown', Date.now())
+	}
+
+	function closePopup() {
+		document.getElementById('promo-popup').style.display = 'none'
+	}
+
+	function copyPromoCode() {
+		const code = document.getElementById('promo-code').textContent
+		navigator.clipboard.writeText(code).then(() => {
+			const confirm = document.getElementById('copy-confirm')
+			confirm.style.display = 'block'
+			setTimeout(() => (confirm.style.display = 'none'), 2000)
+		})
+	}
+
+	// Kliknięcie w tło zamyka popup
+	document
+		.getElementById('promo-popup')
+		.addEventListener('click', function (e) {
+			if (e.target.id === 'promo-popup') {
+				closePopup()
+			}
+		})
+
+	window.addEventListener('DOMContentLoaded', () => {
+		if (shouldShowPopup()) {
+			setTimeout(showPopup, 1500)
+		}
+	})
+</script>
