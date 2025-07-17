@@ -6,19 +6,14 @@
 		--overlay: rgba(0, 0, 0, 0.6);
 	}
 
-	body {
-		margin: 0;
-		padding: 0;
-		font-family: 'Poppins', sans-serif;
-	}
-
 	#promo-popup {
-		display: block;
+		display: none;
 		position: fixed;
 		inset: 0;
 		background-color: var(--overlay);
 		z-index: 9999;
 		animation: fadeIn 0.3s ease-in-out forwards;
+		font-family: 'Poppins', sans-serif;
 	}
 
 	.popup-content {
@@ -55,14 +50,14 @@
 		color: #333;
 	}
 
-	h2 {
+	#promo-popup h2 {
 		color: var(--primary);
 		margin-bottom: 10px;
 		font-size: 20px;
 		line-height: 1.2;
 	}
 
-	p {
+	#promo-popup p {
 		margin: 8px 0;
 		color: #333;
 		font-size: 14px;
@@ -117,10 +112,10 @@
 			max-width: 95%;
 			border-radius: 10px;
 		}
-		h2 {
+		#promo-popup h2 {
 			font-size: 18px;
 		}
-		p {
+		#promo-popup p {
 			font-size: 13px;
 		}
 		button.copy-btn {
@@ -142,50 +137,57 @@
 </div>
 
 <script>
-	function daysSince(timestamp) {
+	window.daysSince = function (timestamp) {
 		const now = Date.now()
-		const diff = now - timestamp
-		return diff / (1000 * 60 * 60 * 24)
+		return (now - timestamp) / (1000 * 60 * 60 * 24)
 	}
 
-	function shouldShowPopup() {
+	window.shouldShowPopup = function () {
 		const lastShown = localStorage.getItem('promoLastShown')
-		return !lastShown || daysSince(Number(lastShown)) >= 7
+		return !lastShown || window.daysSince(Number(lastShown)) >= 7
 	}
 
-	function showPopup() {
+	window.showPopup = function () {
+		console.log('✅ showPopup wywołany')
 		const popup = document.getElementById('promo-popup')
 		const content = document.getElementById('popup-content')
+
+		if (!popup || !content) return
+
 		popup.style.display = 'block'
 		setTimeout(() => content.classList.add('show'), 50)
+	}
+
+	window.closePopup = function () {
+		const popup = document.getElementById('promo-popup')
+		if (popup) popup.style.display = 'none'
 		localStorage.setItem('promoLastShown', Date.now())
 	}
 
-	function closePopup() {
-		document.getElementById('promo-popup').style.display = 'none'
-	}
-
-	function copyPromoCode() {
+	window.copyPromoCode = function () {
 		const code = document.getElementById('promo-code').textContent
 		navigator.clipboard.writeText(code).then(() => {
 			const confirm = document.getElementById('copy-confirm')
-			confirm.style.display = 'block'
-			setTimeout(() => (confirm.style.display = 'none'), 2000)
+			if (confirm) {
+				confirm.style.display = 'block'
+				setTimeout(() => (confirm.style.display = 'none'), 2000)
+			}
 		})
 	}
 
-	// Kliknięcie w tło zamyka popup
-	document
-		.getElementById('promo-popup')
-		.addEventListener('click', function (e) {
-			if (e.target.id === 'promo-popup') {
-				closePopup()
-			}
-		})
+	window.addEventListener('DOMContentLoaded', function () {
+		console.log('✅ DOMContentLoaded działa')
+		if (window.shouldShowPopup()) {
+			setTimeout(window.showPopup, 1500)
+		}
 
-	window.addEventListener('DOMContentLoaded', () => {
-		if (shouldShowPopup()) {
-			setTimeout(showPopup, 1500)
+		const popup = document.getElementById('promo-popup')
+		if (popup) {
+			popup.addEventListener('click', function (e) {
+				if (e.target.id === 'promo-popup') {
+					window.closePopup()
+				}
+			})
 		}
 	})
 </script>
