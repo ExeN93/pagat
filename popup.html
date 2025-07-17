@@ -1,8 +1,15 @@
+<meta charset="UTF-8" />
 <style>
 	:root {
 		--primary: #00aef0;
 		--popup-bg: #ffffff;
 		--overlay: rgba(0, 0, 0, 0.6);
+	}
+
+	body {
+		margin: 0;
+		padding: 0;
+		font-family: 'Poppins', sans-serif;
 	}
 
 	#promo-popup {
@@ -16,9 +23,9 @@
 
 	.popup-content {
 		background-color: var(--popup-bg);
-		padding: 30px 25px;
+		padding: 25px 20px;
 		border-radius: 12px;
-		max-width: 400px;
+		max-width: 360px;
 		width: 90%;
 		margin: 10vh auto;
 		position: relative;
@@ -27,7 +34,7 @@
 		animation: slideUp 0.4s ease-in-out forwards;
 		opacity: 0;
 		transform: translateY(30px);
-		font-family: 'Poppins', sans-serif;
+		box-sizing: border-box;
 	}
 
 	.popup-content.show {
@@ -51,24 +58,26 @@
 	h2 {
 		color: var(--primary);
 		margin-bottom: 10px;
-		font-size: 22px;
+		font-size: 20px;
+		line-height: 1.2;
 	}
 
 	p {
 		margin: 8px 0;
 		color: #333;
-		font-size: 15px;
+		font-size: 14px;
+		line-height: 1.4;
 	}
 
 	button.copy-btn {
 		margin-top: 15px;
-		padding: 10px 22px;
+		padding: 10px 20px;
 		background-color: var(--primary);
 		color: #fff;
 		border: none;
 		border-radius: 8px;
 		cursor: pointer;
-		font-size: 16px;
+		font-size: 15px;
 		transition: background-color 0.3s ease;
 	}
 	button.copy-btn:hover {
@@ -99,6 +108,24 @@
 		to {
 			transform: translateY(0);
 			opacity: 1;
+		}
+	}
+
+	@media screen and (max-width: 480px) {
+		.popup-content {
+			padding: 20px 15px;
+			max-width: 95%;
+			border-radius: 10px;
+		}
+		h2 {
+			font-size: 18px;
+		}
+		p {
+			font-size: 13px;
+		}
+		button.copy-btn {
+			font-size: 14px;
+			padding: 9px 16px;
 		}
 	}
 </style>
